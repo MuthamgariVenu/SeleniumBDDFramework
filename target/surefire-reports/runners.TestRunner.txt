@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: runners.TestRunner
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 29.288 sec <<< FAILURE!
+runScenario(runners.TestRunner)  Time elapsed: 26.517 sec  <<< FAILURE!
+java.lang.AssertionError: For testing Extent Report — forcing failure
+	at org.testng.Assert.fail(Assert.java:99)
+	at stepDefinitions.LoginSteps.login_popup_should_be_displayed(LoginSteps.java:26)
+	at ?.login popup should be displayed(file:///C:/Users/LENOVO/eclipse-workspace/SeleniumBDDFramework/src/test/resources/features/Login.feature:6)
+
