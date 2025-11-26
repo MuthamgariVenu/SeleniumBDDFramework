@@ -1,9 +1,12 @@
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ScreenshotUtil.java
+C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ExcelUtils.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\base\DriverFactory.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\pages\HomePage.java
-C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ExcelUtil.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ExtentManager.java
+C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ICommonActions.java
+C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\WaitHelper.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\pages\LoginPage.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\base\BaseClass.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ConfigReader.java
 C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\ExtentTestManager.java
+C:\Users\LENOVO\eclipse-workspace\SeleniumBDDFramework\src\main\java\utils\CommonActions.java

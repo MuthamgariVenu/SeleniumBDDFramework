@@ -11,36 +11,35 @@ public class BaseClass {
     private static Properties prop;
 
     /**
-     * Initialize browser, timeouts, and application URL.
+     * Initialize browser only if not already open.
      * Reads all values from config.properties.
      */
     public static void initializeBrowser() {
         try {
-            // Load configuration
-            prop = ConfigReader.initProperties();
+            if (driver == null) {  // ✅ Prevents reopening browsers repeatedly
+                prop = ConfigReader.initProperties();
 
-            // Get values safely with defaults
-            String browser = prop.getProperty("browser", "chrome");
-            String appUrl = prop.getProperty("url", "https://www.flipkart.com");
-            String timeoutValue = prop.getProperty("timeout");
+                // Get configuration values
+                String browser = prop.getProperty("browser", "chrome");
+                String appUrl = prop.getProperty("url", "https://practicetestautomation.com/practice-test-login/");
+                String timeoutValue = prop.getProperty("timeout", "10");
 
-            int timeout = 10; // default fallback
-            if (timeoutValue != null && !timeoutValue.isEmpty()) {
-                timeout = Integer.parseInt(timeoutValue);
+                int timeout = Integer.parseInt(timeoutValue);
+
+                // Initialize WebDriver
+                driver = DriverFactory.initDriver(browser);
+
+                // Setup browser session
+                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(timeout));
+                driver.manage().window().maximize();
+                driver.get(appUrl);
+
+                System.out.println("✅ Browser launched successfully: " + browser);
+                System.out.println("🌐 Navigated to URL: " + appUrl);
+                System.out.println("⏱ Timeout set to: " + timeout + " seconds");
+            } else {
+                System.out.println("ℹ️ Browser already initialized. Reusing existing driver.");
             }
-
-            // Initialize WebDriver
-            driver = DriverFactory.initDriver(browser);
-
-            // Apply implicit wait and launch URL
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(timeout));
-            driver.get(appUrl);
-
-            // Console logs for quick debugging
-            System.out.println("✅ Browser launched successfully: " + browser);
-            System.out.println("🌐 Navigated to URL: " + appUrl);
-            System.out.println("⏱ Timeout set to: " + timeout + " seconds");
-
         } catch (Exception e) {
             System.err.println("❌ Browser initialization failed: " + e.getMessage());
             e.printStackTrace();
@@ -51,7 +50,22 @@ public class BaseClass {
      * Get current WebDriver instance.
      */
     public static WebDriver getDriver() {
-        driver = DriverFactory.getDriver();
         return driver;
+    }
+
+    /**
+     * Quit browser and reset driver to null.
+     */
+    public static void quitDriver() {
+        try {
+            if (driver != null) {
+                driver.quit();
+                driver = null;
+                System.out.println("🧹 Browser closed and driver reset successfully.");
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Error while closing browser: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

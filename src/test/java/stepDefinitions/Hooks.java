@@ -21,12 +21,13 @@ public class Hooks {
             BaseClass.initializeBrowser();
             driver = BaseClass.getDriver();
 
-            // Create a new test node in Extent Report
+            // Start a new Extent test node for this scenario
             ExtentTestManager.createTest(scenario.getName());
-            ExtentTestManager.getTest().log(Status.INFO, "Starting test execution: " + scenario.getName());
+            ExtentTestManager.getTest().log(Status.INFO, "🚀 Starting test execution: " + scenario.getName());
+
         } catch (Exception e) {
             ExtentTestManager.createTest(scenario.getName());
-            ExtentTestManager.getTest().log(Status.FAIL, "Setup failed: " + e.getMessage());
+            ExtentTestManager.getTest().log(Status.FAIL, "❌ Setup failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -38,30 +39,36 @@ public class Hooks {
                 // Capture screenshot on failure
                 String screenshotPath = ScreenshotUtil.captureScreenshot(driver, scenario.getName());
 
-                ExtentTestManager.getTest().log(Status.FAIL, "Test Failed: " + scenario.getName());
+                ExtentTestManager.getTest().log(Status.FAIL, "❌ Test Failed: " + scenario.getName());
                 ExtentTestManager.getTest().log(Status.FAIL, "Failure Reason: " + scenario.getStatus());
 
                 if (screenshotPath != null) {
                     ExtentTestManager.getTest().addScreenCaptureFromPath(screenshotPath);
                 }
+
             } else {
-                ExtentTestManager.getTest().log(Status.PASS, "Test Passed: " + scenario.getName());
+                ExtentTestManager.getTest().log(Status.PASS, "✅ Test Passed: " + scenario.getName());
             }
+
         } catch (Exception e) {
             e.printStackTrace();
+
         } finally {
             try {
                 // Flush Extent Report (write all logs to file)
                 ExtentManager.flush();
-                System.out.println("Extent Report generated successfully.");
+                System.out.println("📄 Extent Report generated successfully.");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-            // Quit browser cleanly
-            if (driver != null) {
-                driver.quit();
-                System.out.println("Browser closed successfully.");
+            // Quit browser cleanly via BaseClass
+            try {
+                BaseClass.quitDriver();
+                System.out.println("🧹 Browser closed successfully and driver reset.");
+            } catch (Exception e) {
+                System.err.println("⚠️ Error while closing browser: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

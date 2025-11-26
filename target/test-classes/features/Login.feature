@@ -1,6 +1,6 @@
-Feature: Flipkart Login Feature
+Feature: Practice Test Login Functionality
 
-  Scenario: Verify login popup opens successfully
-    Given user launches the Flipkart application
-    When user clicks on the Login button
-    Then login popup should be displayed
+  Scenario: Verify user can login with Excel data
+    Given user launches the practice test login page
+    When user logs in with Excel data
+    Then user should be logged in successfully
