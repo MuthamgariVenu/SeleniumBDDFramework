@@ -1,71 +1,37 @@
 package base;
 
-import java.time.Duration;
-import java.util.Properties;
 import org.openqa.selenium.WebDriver;
-import utils.ConfigReader;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
-public class BaseClass {
+public class DriverFactory {
 
-    private static WebDriver driver;
-    private static Properties prop;
+    public static WebDriver initDriver(String browser) {
+        WebDriver driver = null;
 
-    /**
-     * Initialize browser only if not already open.
-     * Reads all values from config.properties.
-     */
-    public static void initializeBrowser() {
-        try {
-            if (driver == null) {  // ✅ Prevents reopening browsers repeatedly
-                prop = ConfigReader.initProperties();
+        if (browser.equalsIgnoreCase("chrome")) {
 
-                // Get configuration values
-                String browser = prop.getProperty("browser", "chrome");
-                String appUrl = prop.getProperty("url", "https://practicetestautomation.com/practice-test-login/");
-                String timeoutValue = prop.getProperty("timeout", "10");
+            ChromeOptions options = new ChromeOptions();
 
-                int timeout = Integer.parseInt(timeoutValue);
+            // 🧠 Detect if running inside headless Linux (e.g., Jenkins container)
+            String os = System.getProperty("os.name").toLowerCase();
+            boolean isLinux = os.contains("linux");
 
-                // Initialize WebDriver
-                driver = DriverFactory.initDriver(browser);
-
-                // Setup browser session
-                driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(timeout));
-                driver.manage().window().maximize();
-                driver.get(appUrl);
-
-                System.out.println("✅ Browser launched successfully: " + browser);
-                System.out.println("🌐 Navigated to URL: " + appUrl);
-                System.out.println("⏱ Timeout set to: " + timeout + " seconds");
+            if (isLinux) {
+                System.out.println("🐧 Linux detected → Running Chrome in headless mode");
+                options.addArguments("--headless=new");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--disable-extensions");
+                options.addArguments("--remote-allow-origins=*");
             } else {
-                System.out.println("ℹ️ Browser already initialized. Reusing existing driver.");
+                System.out.println("🖥 Windows/Mac → Running Chrome normally");
             }
-        } catch (Exception e) {
-            System.err.println("❌ Browser initialization failed: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
-    /**
-     * Get current WebDriver instance.
-     */
-    public static WebDriver getDriver() {
+            driver = new ChromeDriver(options);
+        }
+
         return driver;
-    }
-
-    /**
-     * Quit browser and reset driver to null.
-     */
-    public static void quitDriver() {
-        try {
-            if (driver != null) {
-                driver.quit();
-                driver = null;
-                System.out.println("🧹 Browser closed and driver reset successfully.");
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error while closing browser: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }
