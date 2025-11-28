@@ -1,5 +1,6 @@
 package pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -58,18 +59,23 @@ public class LoginPage {
     // Checks if login success message appears
     public boolean isLoginSuccessful() {
         try {
-            return successMessage.isDisplayed();
-        } catch (NoSuchElementException e) {
+            WebElement successMsg = driver.findElement(By.xpath("//h1[text()='Logged In Successfully']"));
+            return successMsg.isDisplayed();
+        } catch (Exception e) {
             return false;
         }
     }
 
+
     // Checks if error message appears for invalid credentials
     public boolean isErrorDisplayed() {
         try {
-            return errorMessage.isDisplayed();
-        } catch (NoSuchElementException e) {
+            WebElement errorMsg = driver.findElement(By.id("error"));
+            return errorMsg.isDisplayed();
+        } catch (Exception e) {
             return false;
         }
     }
-}
+
+    }
+

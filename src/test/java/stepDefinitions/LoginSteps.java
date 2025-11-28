@@ -42,22 +42,30 @@ public class LoginSteps extends BaseClass {
             loginPage.enterPassword(password);
             loginPage.clickLoginButton();
 
-            boolean actual = loginPage.isLoginSuccessful();
-            boolean expected = Boolean.parseBoolean(expectedResult);
+            boolean actualSuccess = loginPage.isLoginSuccessful();
+            boolean actualError = loginPage.isErrorDisplayed();
 
-            if (expected)
-                Assert.assertTrue(actual, "❌ Login failed for valid user.");
-            else
-                Assert.assertFalse(actual, "❌ Login passed for invalid user.");
+            boolean expected = expectedResult.equalsIgnoreCase("success");
+
+            if (expected) {
+                Assert.assertTrue(actualSuccess, "❌ Valid user login failed");
+            } else {
+                Assert.assertTrue(actualError, "❌ Invalid user login passed");
+            }
 
             driver.navigate().back();
+
+            // ADD THIS WAIT
+            Thread.sleep(2000);
+            // OR:
+            // WaitHelper.waitForElementVisible(driver, loginPage.usernameField, 10);
+
         }
     }
 
     @Then("user should be logged in successfully")
     public void user_should_be_logged_in_successfully() {
-        boolean success = loginPage.isLoginSuccessful();
-        Assert.assertTrue(success, "❌ Expected login success but failed.");
-        System.out.println("✅ User logged in successfully!");
+        // No need to validate here when using Excel DDT
     }
+
 }
