@@ -3,8 +3,12 @@ package base;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import utils.ConfigReader;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class DriverFactory {
 
@@ -14,31 +18,47 @@ public class DriverFactory {
 
         System.out.println("🧠 Launching browser: " + browserName);
 
-        // Read headless setting from config.properties
+        // Read config
+        String runMode = ConfigReader.initProperties().getProperty("runMode", "LOCAL");
         String headlessValue = ConfigReader.initProperties().getProperty("headless", "false");
         boolean isHeadless = headlessValue.equalsIgnoreCase("true");
 
-        if (browserName.equalsIgnoreCase("chrome")) {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
 
-            WebDriverManager.chromedriver().setup();
+        if (isHeadless) {
+            System.out.println("🚀 Running in HEADLESS mode");
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
+        }
 
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--remote-allow-origins=*");
+        try {
+            if (runMode.equalsIgnoreCase("GRID")) {
 
-            if (isHeadless) {
-                // Jenkins-friendly headless mode
-                System.out.println("🚀 Running in HEADLESS mode (Jenkins)");
-                options.addArguments("--headless=new");
-                options.addArguments("--no-sandbox");
-                options.addArguments("--disable-dev-shm-usage");
-                options.addArguments("--disable-gpu");
-                options.addArguments("--window-size=1920,1080");
+                // 🔥 RUNNING ON SELENIUM GRID (Jenkins)
+                System.out.println("🌐 Running on Selenium GRID");
+
+                String gridUrl = ConfigReader.initProperties().getProperty(
+                        "gridUrl",
+                        "http://selenium-hub:4444/wd/hub"
+                );
+
+                tlDriver.set(new RemoteWebDriver(new URL(gridUrl), options));
             } else {
-                // Local mode
-                System.out.println("🖥️ Running in NORMAL mode (Local)");
+
+                // 🖥️ RUNNING LOCALLY
+                System.out.println("🖥️ Running locally (ChromeDriver)");
+
+                WebDriverManager.chromedriver().setup();
+                tlDriver.set(new ChromeDriver(options));
             }
 
-            tlDriver.set(new ChromeDriver(options));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("❌ Invalid GRID URL");
         }
 
         return getDriver();
