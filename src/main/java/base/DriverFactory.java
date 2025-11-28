@@ -13,14 +13,23 @@ public class DriverFactory {
         System.out.println("🧠 Launching browser: " + browserName);
 
         if (browserName.equalsIgnoreCase("chrome")) {
-            WebDriverManager.chromedriver().setup(); // ✅ FIX: Handles driver download automatically
+            WebDriverManager.chromedriver().setup();
+
             ChromeOptions options = new ChromeOptions();
+
+            // --------- ⭐ IMPORTANT FOR JENKINS ⭐ ----------
+            // Chrome will NOT open in Jenkins unless it's headless
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
             options.addArguments("--remote-allow-origins=*");
+            // -------------------------------------------------
+
             tlDriver.set(new ChromeDriver(options));
         }
-        // Add support for other browsers later if needed
 
-        getDriver().manage().window().maximize();
         return getDriver();
     }
 
